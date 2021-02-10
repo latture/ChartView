@@ -45,8 +45,9 @@ public struct BarChartRow: View {
                 .onChanged({ value in
                     let width = geometry.frame(in: .local).width
                     self.touchLocation = value.location.x/width
-                    if let currentValue = self.getCurrentValue(width: width) {
-                        self.chartValue.currentValue = currentValue
+                    if let idx = self.getCurrentIndex(width: width) {
+                        self.chartValue.currentValue = self.chartData.points[idx]
+                        self.chartValue.currentLabel = self.chartData.values[idx]
                         self.chartValue.interactionInProgress = true
                     }
                 })
@@ -78,12 +79,12 @@ public struct BarChartRow: View {
         return CGSize(width: 1, height: 1)
     }
 
-	/// Get data value where touch happened
+	/// Get data index where touch happened
 	/// - Parameter width: width of chart
-	/// - Returns: value as `Double` if chart has data
-    func getCurrentValue(width: CGFloat) -> Double? {
-        guard self.chartData.data.count > 0 else { return nil}
+	/// - Returns: index of current point if chart has data
+    func getCurrentIndex(width: CGFloat) -> Int? {
+        guard self.chartData.data.count > 0 else { return nil }
             let index = max(0,min(self.chartData.data.count-1,Int(floor((self.touchLocation*width)/(width/CGFloat(self.chartData.data.count))))))
-            return self.chartData.points[index]
+            return index
         }
 }

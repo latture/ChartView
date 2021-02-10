@@ -13,7 +13,7 @@ public enum ChartLabelType {
 public struct ChartLabel: View {
     @EnvironmentObject var chartValue: ChartValue
     @State var textToDisplay:String = ""
-    var format: String = "%.01f"
+    var format: String = "%.0f"
 
     private var title: String
 
@@ -77,7 +77,7 @@ public struct ChartLabel: View {
 	///   - type: Which `ChartLabelType` to use
     public init (_ title: String,
                  type: ChartLabelType = .title,
-                 format: String = "%.01f") {
+                 format: String = "%.0f") {
         self.title = title
         labelType = type
         self.format = format
@@ -97,7 +97,17 @@ public struct ChartLabel: View {
                     self.textToDisplay = self.title
                 }
                 .onReceive(self.chartValue.objectWillChange) { _ in
-                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) : self.title
+                    let text = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) : self.title
+                    switch labelType {
+                    case .legend:
+                        if self.chartValue.interactionInProgress, let label = self.chartValue.currentLabel, !label.isEmpty {
+                            self.textToDisplay = label
+                        } else {
+                            self.textToDisplay = text
+                        }
+                    default:
+                        self.textToDisplay = text
+                    }
                 }
                 .onChange(of: title, perform: { text in
                     self.textToDisplay = text
