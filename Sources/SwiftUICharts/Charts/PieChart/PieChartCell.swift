@@ -15,6 +15,9 @@ public struct PieChartCell: View {
     var radius: CGFloat {
         return min(rect.width, rect.height)/2
     }
+    var innerRadius: CGFloat {
+        0.4 * radius
+    }
     var startDeg: Double
 	var endDeg: Double
 
@@ -27,7 +30,13 @@ public struct PieChartCell: View {
             startAngle: Angle(degrees: self.startDeg),
             endAngle: Angle(degrees: self.endDeg),
             clockwise: false)
-        path.addLine(to: rect.mid)
+        path.addLine(to: point(radius: self.innerRadius, angle: endDeg))
+        path.addArc(
+            center: rect.mid,
+            radius: self.innerRadius,
+            startAngle: Angle(degrees: self.endDeg),
+            endAngle: Angle(degrees: self.startDeg),
+            clockwise: true)
         path.closeSubpath()
         return path
     }
@@ -40,29 +49,33 @@ public struct PieChartCell: View {
         (endDeg - startDeg) / 360 * 100
     }
     
+    private func point(radius: CGFloat, angle: Double) -> CGPoint {
+    var deltaX = radius * CGFloat(cos(abs(angle).truncatingRemainder(dividingBy: 90.0) * .pi / 180.0))
+    var deltaY = radius * CGFloat(sin(abs(angle).truncatingRemainder(dividingBy: 90.0) * .pi / 180.0))
+    
+    if 90 <= angle && angle < 180 {
+        deltaY *= -1
+        let dx = deltaX
+        let dy = deltaY
+        deltaX = dy
+        deltaY = dx
+    } else if 180 <= angle && angle < 270 {
+        deltaX *= -1
+        deltaY *= -1
+    } else if 270 <= angle && angle < 360 {
+        deltaX *= -1
+        let dx = deltaX
+        let dy = deltaY
+        deltaX = dy
+        deltaY = dx
+    }
+    
+    return CGPoint(x: rect.midX + deltaX, y: rect.midY + deltaY)
+    }
+    
     private var labelOffset: CGPoint {
-        let alpha = startDeg + deltaDeg / 2.0
-        var deltaX = 0.6 * radius * CGFloat(cos(abs(alpha).truncatingRemainder(dividingBy: 90.0) * .pi / 180.0))
-        var deltaY = 0.6 * radius * CGFloat(sin(abs(alpha).truncatingRemainder(dividingBy: 90.0) * .pi / 180.0))
-        
-        if 90 <= alpha && alpha < 180 {
-            deltaY *= -1
-            let dx = deltaX
-            let dy = deltaY
-            deltaX = dy
-            deltaY = dx
-        } else if 180 <= alpha && alpha < 270 {
-            deltaX *= -1
-            deltaY *= -1
-        } else if 270 <= alpha && alpha < 360 {
-            deltaX *= -1
-            let dx = deltaX
-            let dy = deltaY
-            deltaX = dy
-            deltaY = dx
-        }
-        
-        return CGPoint(x: rect.midX + deltaX, y: rect.midY + deltaY)
+        let angle = startDeg + deltaDeg / 2.0
+        return point(radius: 0.6 * radius, angle: angle)
     }
     
     private var deltaDeg: Double {
