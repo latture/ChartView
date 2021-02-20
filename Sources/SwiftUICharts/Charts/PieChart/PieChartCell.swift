@@ -16,7 +16,7 @@ public struct PieChartCell: View {
         return min(rect.width, rect.height)/2
     }
     var innerRadius: CGFloat {
-        0.4 * radius
+        0.3 * radius
     }
     var startDeg: Double
 	var endDeg: Double
@@ -75,7 +75,7 @@ public struct PieChartCell: View {
     
     private var labelOffset: CGPoint {
         let angle = startDeg + deltaDeg / 2.0
-        return point(radius: 0.6 * radius, angle: angle)
+        return point(radius: 0.65 * radius, angle: angle)
     }
     
     private var deltaDeg: Double {
