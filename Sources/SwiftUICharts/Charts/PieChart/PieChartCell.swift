@@ -31,10 +31,52 @@ public struct PieChartCell: View {
         path.closeSubpath()
         return path
     }
+    
+    var label: String {
+        String(format: "%.0f%%", percentage)
+    }
+    
+    private var percentage: Double {
+        (endDeg - startDeg) / 360 * 100
+    }
+    
+    private var labelOffset: CGPoint {
+        let alpha = startDeg + deltaDeg / 2.0
+        var deltaX = 0.6 * radius * CGFloat(cos(abs(alpha).truncatingRemainder(dividingBy: 90.0) * .pi / 180.0))
+        var deltaY = 0.6 * radius * CGFloat(sin(abs(alpha).truncatingRemainder(dividingBy: 90.0) * .pi / 180.0))
+        
+        if 90 <= alpha && alpha < 180 {
+            deltaY *= -1
+            let dx = deltaX
+            let dy = deltaY
+            deltaX = dy
+            deltaY = dx
+        } else if 180 <= alpha && alpha < 270 {
+            deltaX *= -1
+            deltaY *= -1
+        } else if 270 <= alpha && alpha < 360 {
+            deltaX *= -1
+            let dx = deltaX
+            let dy = deltaY
+            deltaX = dy
+            deltaY = dx
+        }
+        
+        return CGPoint(x: rect.midX + deltaX, y: rect.midY + deltaY)
+    }
+    
+    private var deltaDeg: Double {
+        endDeg - startDeg
+    }
+    
+    private var isStroked: Bool {
+        startDeg != endDeg
+    }
+    
     var index: Int
     
     // Section line border color
-    var backgroundColor: Color
+    var backgroundColor: Color = Color(UIColor.systemBackground)
     
     // Section color
     var accentColor: ColorGradient
@@ -43,16 +85,20 @@ public struct PieChartCell: View {
 	///
 	/// Fills and strokes with 2-pixel line (unless start/end degrees not yet set). Animates by scaling up to 100% when first appears.
     public var body: some View {
-        Group {
+        ZStack {
             path
                 .fill(self.accentColor.linearGradient(from: .bottom, to: .top))
-                .overlay(path.stroke(self.backgroundColor, lineWidth: (startDeg == 0 && endDeg == 0 ? 0 : 2)))
-                .scaleEffect(self.show ? 1 : 0)
-                .animation(Animation.spring().delay(Double(self.index) * 0.04))
-                .onAppear {
-                    self.show = true
+                .overlay(path.stroke(self.backgroundColor, lineWidth: isStroked ? 2 : 0))
+            if percentage > 8 {
+                Text(label)
+                    .foregroundColor(self.backgroundColor)
+                    .position(labelOffset)
             }
-            
+        }
+        .scaleEffect(self.show ? 1 : 0)
+        .animation(Animation.spring().delay(Double(self.index) * 0.04))
+        .onAppear {
+            self.show = true
         }
     }
 }
@@ -64,43 +110,48 @@ struct PieChartCell_Previews: PreviewProvider {
             GeometryReader { geometry in
                 PieChartCell(
                     rect: geometry.frame(in: .local),
-                    startDeg: 00.0,
-                    endDeg: 90.0,
+                    startDeg: 0.0,
+                    endDeg: 40.0,
                     index: 0,
-                    backgroundColor: Color.red,
                     accentColor: ColorGradient.greenRed)
                 }.frame(width: 100, height: 100)
             
             GeometryReader { geometry in
-            PieChartCell(
-                rect: geometry.frame(in: .local),
-                startDeg: 0.0,
-                endDeg: 90.0,
-                index: 0,
-                backgroundColor: Color.green,
-                accentColor: ColorGradient.redBlack)
-            }.frame(width: 100, height: 100)
+                PieChartCell(
+                    rect: geometry.frame(in: .local),
+                    startDeg: 90.0,
+                    endDeg: 130.0,
+                    index: 0,
+                    accentColor: ColorGradient.greenRed)
+                }.frame(width: 100, height: 100)
             
             GeometryReader { geometry in
-            PieChartCell(
-                rect: geometry.frame(in: .local),
-                startDeg: 100.0,
-                endDeg: 135.0,
-                index: 0,
-                backgroundColor: Color.black,
-                accentColor: ColorGradient.whiteBlack)
-            }.frame(width: 100, height: 100)
+                PieChartCell(
+                    rect: geometry.frame(in: .local),
+                    startDeg: 180,
+                    endDeg: 220,
+                    index: 0,
+                    accentColor: ColorGradient.greenRed)
+                }.frame(width: 100, height: 100)
             
+            GeometryReader { geometry in
+                PieChartCell(
+                    rect: geometry.frame(in: .local),
+                    startDeg: 270,
+                    endDeg: 310,
+                    index: 0,
+                    accentColor: ColorGradient.greenRed)
+                }.frame(width: 100, height: 100)
+
             GeometryReader { geometry in
             PieChartCell(
                 rect: geometry.frame(in: .local),
                 startDeg: 185.0,
                 endDeg: 290.0,
                 index: 1,
-                backgroundColor: Color.purple,
                 accentColor: ColorGradient(.purple))
             }.frame(width: 100, height: 100)
-            
+
             GeometryReader { geometry in
             PieChartCell(
                 rect: geometry.frame(in: .local),
