@@ -89,7 +89,7 @@ public struct PieChartCell: View {
     var index: Int
     
     // Section line border color
-    var backgroundColor: Color = Color(UIColor.systemBackground)
+    var backgroundColor: Color
     
     // Section color
     var accentColor: ColorGradient
@@ -126,6 +126,7 @@ struct PieChartCell_Previews: PreviewProvider {
                     startDeg: 0.0,
                     endDeg: 40.0,
                     index: 0,
+                    backgroundColor: Color.white,
                     accentColor: ColorGradient.greenRed)
                 }.frame(width: 100, height: 100)
             
@@ -135,6 +136,7 @@ struct PieChartCell_Previews: PreviewProvider {
                     startDeg: 90.0,
                     endDeg: 130.0,
                     index: 0,
+                    backgroundColor: Color.white,
                     accentColor: ColorGradient.greenRed)
                 }.frame(width: 100, height: 100)
             
@@ -144,6 +146,7 @@ struct PieChartCell_Previews: PreviewProvider {
                     startDeg: 180,
                     endDeg: 220,
                     index: 0,
+                    backgroundColor: Color.white,
                     accentColor: ColorGradient.greenRed)
                 }.frame(width: 100, height: 100)
             
@@ -153,6 +156,7 @@ struct PieChartCell_Previews: PreviewProvider {
                     startDeg: 270,
                     endDeg: 310,
                     index: 0,
+                    backgroundColor: Color.white,
                     accentColor: ColorGradient.greenRed)
                 }.frame(width: 100, height: 100)
 
@@ -162,6 +166,7 @@ struct PieChartCell_Previews: PreviewProvider {
                 startDeg: 185.0,
                 endDeg: 290.0,
                 index: 1,
+                backgroundColor: Color.white,
                 accentColor: ColorGradient(.purple))
             }.frame(width: 100, height: 100)
 

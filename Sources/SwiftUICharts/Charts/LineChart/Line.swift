@@ -13,47 +13,6 @@ public struct Line: View {
     @State private var didCellAppear: Bool = false
 
     var curvedLines: Bool = true
-
-	/// Step for plotting through data
-	/// - Returns: X and Y delta between each data point based on data and view's frame
-    var step: CGPoint {
-        return CGPoint.getStep(frame: frame, data: chartData.points)
-    }
-
-	/// Path of line graph
-	/// - Returns: A path for stroking representing the data, either curved or jagged.
-    var path: Path {
-        let points = chartData.points
-
-        if curvedLines {
-            return Path.quadCurvedPathWithPoints(points: points,
-                                                 step: step,
-                                                 globalOffset: nil)
-        }
-
-        return Path.linePathWithPoints(points: points, step: step)
-    }
-    
-	/// Path of linegraph, but also closed at the bottom side
-	/// - Returns: A path for filling representing the data, either curved or jagged
-    var closedPath: Path {
-        let points = chartData.points
-
-        if curvedLines {
-            return Path.quadClosedCurvedPathWithPoints(points: points,
-                                            step: step,
-                                            globalOffset: nil)
-        }
-
-        return Path.closedLinePathWithPoints(points: points, step: step)
-    }
-
-    // see https://stackoverflow.com/a/62370919
-    // This lets geometry be recalculated when device rotates. However it doesn't cover issue of app changing
-    // from full screen to split view. Not possible in SwiftUI? Feedback submitted to apple FB8451194.
-    let orientationChanged = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
-        .makeConnectable()
-        .autoconnect()
     
 	/// The content and behavior of the `Line`.
 	/// Draw the background if showing the full line (?) and the `showBackground` option is set. Above that draw the line, and then the data indicator if the graph is currently being touched.

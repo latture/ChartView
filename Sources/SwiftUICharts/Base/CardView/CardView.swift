@@ -25,7 +25,7 @@ public struct CardView<Content: View>: View, ChartBase {
         ZStack{
             if showShadow {
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(UIColor.systemBackground))
+//                    .fill(Color(UIColor.systemBackground))
                     .shadow(color: Color.gray, radius: 8)
             }
             VStack {

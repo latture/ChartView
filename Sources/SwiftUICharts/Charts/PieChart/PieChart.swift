@@ -26,7 +26,7 @@ struct PieChart_Previews: PreviewProvider {
                     PieChart()
                 }
                 .data([1, 1, 5])
-                .chartStyle(ChartStyle(backgroundColor: Color(UIColor.systemBackground), foregroundColor: [ColorGradient(Color(UIColor.systemBlue)), ColorGradient(Color(UIColor.systemOrange)), ColorGradient(Color(UIColor.systemGreen))]))
+                .chartStyle(ChartStyle(backgroundColor: Color.white, foregroundColor: [ColorGradient(Color.blue), ColorGradient(Color.orange), ColorGradient(Color.green)]))
                 .font(Font.caption)
             }.frame(width: 120, height: 120)
             
